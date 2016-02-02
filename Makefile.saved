@@ -1,0 +1,35 @@
+
+# This directory contains SNES example programs for solving systems of
+# nonlinear equations.
+
+#CPPFLAGS	 = -I/PETSc3/geodynamics/PetscSimulationsViewers/src
+CFLAGS           =
+FFLAGS		 =
+CPPFLAGS         =
+FPPFLAGS         =
+LOCDIR		 = src/snes/examples/tutorials/
+MANSEC           = SNES
+EXAMPLESC	 = ex1.c
+EXAMPLESF	 = ex5f90.F90
+EXAMPLESCH	 = 
+EXAMPLESFH       = ex5f.h
+
+include ${PETSC_DIR}/conf/variables
+include ${PETSC_DIR}/conf/rules
+
+FOBJS = ex5f90.o
+
+all: ex5f90  chkopts
+
+ex5f90: ex5f90.o  chkopts
+	-${FLINKER} -o ex5f90 ex5f90.o ${PETSC_SNES_LIB}
+	${RM} ex5f90.o
+
+runex5f90:
+	-@${MPIEXEC} -n 4 ./ex5f90 -snes_mf -da_processors_x 4 -da_processors_y 1 -snes_monitor_short -ksp_gmres_cgs_refinement_type refine_always > ex5f90_1.tmp 2>&1; \
+	   if (${DIFF} output/ex5f90_1.out ex5f90_1.tmp) then true; \
+	   else  printf "${PWD}\nPossible problem with ex5f90_1, diffs above\n=========================================\n"; fi; \
+	   ${RM} -f ex5f90_1.tmp
+
+include ${PETSC_DIR}/conf/test
+

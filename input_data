@@ -1,0 +1,8 @@
+# for visualization only
+
+# grid dimensions
+-NX 2048
+-NY 2048
+
+# numerical params
+-discretization d2q9 #d2q9
