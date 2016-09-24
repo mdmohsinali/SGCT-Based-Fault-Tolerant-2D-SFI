@@ -4,7 +4,7 @@
  *              to execute the 2D fault-tolerant Solid Fuel Ignition application    *
  * Author     : Md Mohsin Ali (mohsin.ali<AT>anu.edu.au)                            *
  * Created    : December 2015                                                       *
- * Updated    : January  2016                                                       *
+ * Updated    : September 2016                                                      *
  ************************************************************************************/
 
 1.  HOW TO RUN?
@@ -76,14 +76,13 @@
         author = {Ali, Md Mohsin and Strazdins, Peter E and Harding, Brendan and Hegland, Markus},
         title = {Complex Scientific Applications Made Fault-Tolerant with the Sparse Grid Combination Technique},
         journal = {International Journal of High Performance Computing Applications (IJHPCA 2016)},
-        volume = {},
-        number = {},
-        pages = {},
-        doi = {},
+        volume = {30},
+        number = {3},
+        pages = {335--359},
+        doi = {10.1177/1094342015628056},
         days = {},
         month = {},
-        year = {2016},
-        note = {(In Press)},
+        year = {2016},     
     }
 
     @PhdThesis{ali:2016:hpcftpdes,
