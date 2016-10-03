@@ -2,7 +2,7 @@
 #PBS -l ncpus=64
 #PBS -q normal
 #PBS -l mem=128GB
-#PBS -l walltime=00:06:00
+#PBS -l walltime=00:18:00
 #PBS -N SGField
 #PBS -M mohsin.ali@anu.edu.au
 
@@ -37,7 +37,10 @@
 
 # Load modules
 #module purge
-#module load openmpi
+module load openmpi/1.4.3
+module load gcc/4.6.4
+module load python/2.7.11
+module load python/2.7.11-matplotlib
 #module list
 
 # Execution info
@@ -112,7 +115,7 @@ trap "rm -f $HOST_FILE" EXIT
 #echo "Setting environment from \"set_environment.raijin_cluster.non_ft_gfortran.sh\"";\
 #source set_environment.raijin_cluster.non_ft_gfortran.sh;\
 #echo "Calling make allclean; make";\
-#make allclean;\
+make clean;\
 make;\
 pwd)
 
@@ -123,7 +126,7 @@ pwd)
 # Execute MPI code
 # For fixed-time steps
 #./run3dAdvectRaijin -v 1 -2 -p 128 -q 64 -r 32 -l ${LEVEL} ${X_DIM} ${Y_DIM} ${Z_DIM} # for 2D for 784 level 4
-./run3dAdvectRaijin -v 0 -2 -p 8 -q 4 -r 2 -l ${LEVEL} ${X_DIM} ${Y_DIM} ${Z_DIM} # for 2D for 49 level 4, 64 level 5
+./run3dAdvectRaijin -v 1 -2 -C 4 -F -p 8 -q 4 -r 2 -l ${LEVEL} ${X_DIM} ${Y_DIM} ${Z_DIM} # for 2D for 49 level 4, 64 level 5
 
 #qstat -f $PBS_JOBID | grep used
 

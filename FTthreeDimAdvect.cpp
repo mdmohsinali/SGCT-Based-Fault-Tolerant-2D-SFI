@@ -80,7 +80,7 @@
 	\t(`U' option will be applicable for the repeated runs if uses \n \
 	\tthe same number of MPI processes with the same degree of \n \
 	\tparallelism on each run); \n \
-        -F: full combined grid; \n \
+        -F: full combined grid; must set for visualization;\n \
         -d: debug grid combination; \n \
         v: verbosity; \n \
         vT: verbosity of timer output; \n \
@@ -601,8 +601,10 @@ void getArgs(int argc, char *argv[], int rank, int nprocs) {
            usage("sgProcs too large for given g and level");
         if (nprocsUg != FTGridCombine3D::nProcs(is2D, level, pD, isFixedProcs, haveExtraGrids))
            usage("nprocsUg fails its constraint");
+        /*
         if (pD[0] < degP*8)
            usage("pD0 should be at least degP*8");
+        */        
 
         if (rank == 0) {
            printf("Level %d %dD combination alg to be applied %d times with %d,%d,%d,%d "
@@ -1152,10 +1154,10 @@ int sumOfPrevGridsProcs(int gid, int level, int pD[4]) {
            else if (gid > level && gid <= (2*level - 1)) 
               return (level*pd[0] + (gid-level)*pd[1]);
            else if (gid > (2*level - 1) && gid <= 3*level - 3) 
-              return (level*pd[0] + (level-1)*pd[1] + (gid - (2*level-1))*pd[1]/2);
+              return (level*pd[0] + (level-1)*pd[1] + (gid - (2*level-1))*pd[2]);
            else if (gid > 3*level - 3) 
-              return (level*pd[0] + (level-1)*pd[1] + (level-2)*pd[1]/2 + 
-                     (gid - (3*level-3))*pd[1]/4);
+              return (level*pd[0] + (level-1)*pd[1] + (level-2)*pd[2] + 
+                     (gid - (3*level-3))*pd[3]);
         }
         else {
            int nGridsFirstLayer = level*(level+1)/2;

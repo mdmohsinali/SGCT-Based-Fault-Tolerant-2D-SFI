@@ -1,0 +1,62 @@
+
+.SUFFIXES:
+.PRECIOUS: %.o
+
+# include CPP object files in CPP_OBJS variable, and set some 
+# switches (TAU_PROFILE, NON_FT)
+include cpp_objs_switches.mk
+
+HDRS=Advect3D.h HaloArray3D.h ProcGrid3D.h Vec3D.h GridCombine3D.h \
+	LinGrid3D.h Timer.h
+OBJS=Advect3D.o Advect2D.o GridCombine3D.o
+PROG=app_raijin_cluster
+CCFLAGS=-O3 -fopenmp -std=gnu++0x
+
+# MPI CPP compiler
+ifndef MPICPP
+  MPICPP := $(shell which mpic++)
+endif
+
+# MPI Fortran compiler
+ifndef MPIFORTRAN
+  MPIFORTRAN := $(shell which mpif90)
+endif
+
+# flags related to non-ft mpi
+ifeq ($(NON_FT),yes)
+  CPPFLAGS += -DNON_FT
+  FFLAGS += -DNON_FT
+endif
+
+# CPP flags
+CPPFLAGS += -I$(CPP_INCLUDE_DIR) -Wall -Wwrite-strings -Wno-strict-aliasing -Wno-unknown-pragmas -g3 -O0   -I/short/v29/mma659/non_ft_sw/petsc/include -I/short/v29/mma659/non_ft_sw/petsc/linux-gnu/include -I/apps/openmpi/1.4.3/include -g -fopenmp -std=gnu++0x
+
+# CPP link libs
+CPP_LINK_LIBS = -L$(PETSC_DIR)/lib -L/short/v29/mma659/non_ft_sw/lib -lglpk -lmpi_cxx -lstdc++ -lgomp
+
+CPP_INCLUDE_DIR = ${PETSC_DIR}/include
+
+#FORTRAN flags
+FFLAGS += -Wall -Wno-unused-variable -ffree-line-length-0 -Wno-unused-dummy-argument -g -O0    -I/short/v29/mma659/non_ft_sw/petsc/include -I/short/v29/mma659/non_ft_sw/petsc/linux-gnu/include -I/apps/openmpi/1.4.3/include
+
+FORTRAN_OBJS = AppWrap.o
+
+all: FORTRAN CPP LINK
+
+FORTRAN:
+	$(MPIFORTRAN) -c $(FFLAGS) -o AppWrap.o AppWrap.F90
+
+CPP: $(CPP_OBJS)
+
+%.o: %.cpp $(HDRS)
+	$(MPICPP) -c $(CPPFLAGS) $*.cpp	
+
+LINK:
+	$(MPIFORTRAN) -Wall -Wno-unused-variable -ffree-line-length-0 -Wno-unused-dummy-argument -g -O0 -o $(PROG) $(FORTRAN_OBJS)  $(CPP_OBJS) -L/short/v29/mma659/non_ft_sw/petsc/linux-gnu/lib  -lpetsc /short/v29/mma659/non_ft_sw/lib/lapack_LINUX.a /short/v29/mma659/non_ft_sw/lib/blas_LINUX.a -lssl -lcrypto -lX11 -lhwloc -L/apps/openmpi/1.4.3/lib -L/apps/gcc/4.6.4/lib64 -L/apps/gcc/4.6.4/lib/gcc/x86_64-unknown-linux-gnu/4.6.4 -L/apps/openmpi/1.4.3/lib/GNU -L/apps/openmpi/1.4.3/lib/profilers -L/apps/gcc/4.6.4/lib -L/just/a/flag/for/gnu -lmpi_f90 -lmpi_f77 -lgfortran -lm -lgfortran -lm -lgfortran -lm -lquadmath -lm -lmpi_cxx -lstdc++ -L/apps/openmpi/1.4.3/lib -L/apps/gcc/4.6.4/lib64 -L/apps/gcc/4.6.4/lib/gcc/x86_64-unknown-linux-gnu/4.6.4 -L/apps/gcc/4.6.4/lib64 -L/apps/openmpi/1.4.3/lib/GNU -L/apps/openmpi/1.4.3/lib -L/apps/openmpi/1.4.3/lib/profilers -L/apps/gcc/4.6.4/lib64 -L/apps/gcc/4.6.4/lib -ldl -lmpi -lopen-rte -lopen-pal -lnsl -lutil -lgcc_s -lpthread -ldl $(CPP_LINK_LIBS)
+
+clean:
+	rm -f *.o $(PROG)
+run2d:
+	mpirun -np 14 ./$(PROG) -v 1 -2 -p 1 -q 1 -r 1 -l 5 6 6 0 # -F option for visualization
+
+include ${PETSC_DIR}/conf/test

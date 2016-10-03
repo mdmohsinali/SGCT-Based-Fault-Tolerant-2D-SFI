@@ -20,7 +20,7 @@
 
     (a) Git revision icldistcomp-ulfm-46b781a8f170 (as of 13 December 2014)
     (b) gcc version 4.6.4 (GCC)
-    (c) PETSc (version 3.5.2) was installed with the following configuration
+    (c) PETSc (version 3.5.2 and 3.6.4) was installed with the following configuration
         ./configure --prefix=PATH --with-mpi-dir=PATH PETSC_ARCH=linux-gnu \
         --download-fblaslapack=1 --with-shared-libraries=1 PETSC_DIR=PATH/petsc \
         PETSC_ARCH=linux-gnu --with-64-bit-indices=0
